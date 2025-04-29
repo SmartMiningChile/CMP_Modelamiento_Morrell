@@ -1,0 +1,98 @@
+# Modelo de Morrell para Molinos
+
+## Descripción
+
+Este proyecto implementa el modelo de Morrell, detallado en el artículo de Morrell et al. (1994), para calcular la potencia consumida por molinos a partir de diversos parámetros operacionales y de diseño. Además, incorpora datos de sensores provistos por Smart Mining Services.
+
+## Dependencias
+
+El modelo requiere Python y las siguientes bibliotecas:
+- numpy
+- scipy
+
+## Parámetros de Entrada
+
+El modelo requiere la siguiente información, especificada en las respectivas tablas de la base de datos:
+
+### Tabla `sm_molinos`
+- `L`: Longitud del molino (en pies, float, >0)   ----> en BD CAMPO: profundidadlargomolino
+- `d`: Diámetro del molino (en pies, float, >0)   ----> en BD CAMPO: diametro
+- `Pv`: Potencia de vacío (en kW, float, >0)      ----> en BD Tabla sm_constantes registro con NOMBRE : pv
+
+Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
+
+- Pv es 400kW
+  
+### Tabla `sm_operaciones`
+- `rho_0`: Densidad del mineral (ton/m3, float, > 0)                                       ----> en BD CAMPO: densidadmineral
+- `rho_b`: Densidad de las bolas (ton/m3,float, > 0)                                       ----> en BD CAMPO: densidadbolas
+- `rho_p`: Densidad de la pulpa (ton/m3,float, > 0)                                        ----> en BD Tabla sm_constantes registro con NOMBRE : rho_p
+- `P61`: % de alimento fresco en el rango de tamaño 6'' y 1" (adimensional, float, [0,1])  ----> en BD Tabla sm_constantes registro con NOMBRE : p61
+- `Pbruta`: Potencia bruta (en kW, float, >0)                                              ----> en BD CAMPO: potenciaconsumida
+- `P_𝑠𝑜𝑙𝑖𝑑𝑜𝑠`: Porcentaje de sólidos (adimensional, float, [0,1])                           ----> en BD CAMPO: porcentajesolidos
+
+Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
+
+- rho_0 es 3.90 ton/m3
+- rho_b es 9.36 ton/m3
+- rho_p  es 0.495 ton/m3
+- P61 es 0.38    ----> en BD TABLA sm_constantes registro con nombre p61
+
+### Tabla `sm_constantes`
+- `g`: Aceleración de gravedad (m/s2, float, 9.81)                                                     ----> en BD Tabla sm_constantes registro con NOMBRE : g
+- `E`: Porosidad fraccionaria de carga (adimensional, float,0.4)                                       ----> en BD Tabla sm_constantes registro con NOMBRE : E
+- `U`: Fracción del espacio vacío del medio de molienda ocupado por la pulpa (adimensioal, float, 1)   ----> en BD Tabla sm_constantes registro con NOMBRE : U
+- `k`: Constante de calibración de molino para METSO 1 (adimensional, float, 0.89)                     ----> en BD Tabla sm_constantes registro con NOMBRE : k
+
+-> se genera nueva tabla **sm_constantes** con la siguiente estructura 
+  - idconstante integer NOT NULL DEFAULT PK,
+  - nombre character varying(50),
+  - valor double,
+  - unidadmedida character varying(20),
+  - fechaultimaactualizacion time without time zone
+  - id molino (FK a tabla sm_molinos)
+  - descripcion_nombre character varying(50)
+    
+### Tabla `sm_datasensores`
+- `rpm`: Revoluciones por minuto (rev/min, float, >0)                          ----> en BD Tabla sm_datasensores CAMPO rpm
+
+## Parámetros de Salida
+- `timestamp`: Fecha y hora de la simulación (formato YYYY-MM-DD HH:MM:SS)
+- `rpm`: Revoluciones por minuto (rev/min, float)
+- `potenciaconsumida`: Potencia bruta (en kW, float)
+- `J`: Nivel de llenado de carga (%, float)
+- `Jb`: Nivel de llenado de bolas (%, float)
+- `pie`: Ángulo de impacto (grados, float)
+- `hombro`: Ángulo de hombro (grados,float)
+- `vel_critica`: Porcentaje de velocidad crítica del molino (%,float)
+
+-> se genera nueva tabla **sm_ia_resultado_modelo** con la siguiente estructura 
+  - id_ia_resultado integer NOT NULL PK
+  - fecha timestamp without time zone,
+  - rpm double precision,
+  - potenciaconsumida double precision,
+  - j double precision,
+  - jb double precision,
+  - pie double precision,
+  - hombro double precision,
+  - velocidad_critica double precision,
+  - id_molino integer (FK a tabla sm_molinos),
+  - error integer,
+  - error_descripcion character varying(200)
+
+## Método Numérico
+
+El modelo utiliza el método de bisección para resolver la ecuación, partiendo de un rango inicial de [0.1, 0.37].
+
+## Ejemplo de Resultados
+
+{
+  "timestamp": "2024-04-09 12:00:00",
+  "rpm": 15.2,
+  "potenciaconsumida": 1500,
+  "J": 35.2,
+  "Jb": 30.2,
+  "pie": 28.65,
+  "hombro": 34.38,
+  "vel_critica": 65.2
+}
