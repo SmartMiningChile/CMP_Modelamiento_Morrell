@@ -33,16 +33,16 @@ Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
 
 Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
 
-- rho_0 es 3.90 ton/m3
+- rho_0 es 5 ton/m3
 - rho_b es 9.36 ton/m3
-- rho_p  es 0.495 ton/m3
-- P61 es 0.38    ----> en BD TABLA sm_constantes registro con nombre p61
+- rho_p  es 2.8 ton/m3
+- P61 es 0.02    ----> en BD TABLA sm_constantes registro con nombre p61
 
 ### Tabla `sm_constantes`
 - `g`: Aceleración de gravedad (m/s2, float, 9.81)                                                     ----> en BD Tabla sm_constantes registro con NOMBRE : g
 - `E`: Porosidad fraccionaria de carga (adimensional, float,0.4)                                       ----> en BD Tabla sm_constantes registro con NOMBRE : E
 - `U`: Fracción del espacio vacío del medio de molienda ocupado por la pulpa (adimensioal, float, 1)   ----> en BD Tabla sm_constantes registro con NOMBRE : U
-- `k`: Constante de calibración de molino para METSO 1 (adimensional, float, 0.89)                     ----> en BD Tabla sm_constantes registro con NOMBRE : k
+- `k`: Constante de calibración de molino para METSO 1 (adimensional, float, 0.6)                     ----> en BD Tabla sm_constantes registro con NOMBRE : k
 
 -> se genera nueva tabla **sm_constantes** con la siguiente estructura 
   - idconstante integer NOT NULL DEFAULT PK,
