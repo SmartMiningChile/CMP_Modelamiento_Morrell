@@ -36,22 +36,13 @@ Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
 - rho_0 es 5 ton/m3
 - rho_b es 9.36 ton/m3
 - rho_p  es 2.8 ton/m3
-- P61 es 0.02    ----> en BD TABLA sm_constantes registro con nombre p61
+- P61 es 0.02  
 
 ### Tabla `sm_constantes`
 - `g`: Aceleración de gravedad (m/s2, float, 9.81)                                                     ----> en BD Tabla sm_constantes registro con NOMBRE : g
 - `E`: Porosidad fraccionaria de carga (adimensional, float,0.4)                                       ----> en BD Tabla sm_constantes registro con NOMBRE : E
 - `U`: Fracción del espacio vacío del medio de molienda ocupado por la pulpa (adimensioal, float, 1)   ----> en BD Tabla sm_constantes registro con NOMBRE : U
-- `k`: Constante de calibración de molino para METSO 1 (adimensional, float, 0.6)                     ----> en BD Tabla sm_constantes registro con NOMBRE : k
-
--> se genera nueva tabla **sm_constantes** con la siguiente estructura 
-  - idconstante integer NOT NULL DEFAULT PK,
-  - nombre character varying(50),
-  - valor double,
-  - unidadmedida character varying(20),
-  - fechaultimaactualizacion time without time zone
-  - id molino (FK a tabla sm_molinos)
-  - descripcion_nombre character varying(50)
+- `k`: Constante de calibración de molino para METSO 1 (adimensional, float, 0.51)                     ----> en BD Tabla sm_constantes registro con NOMBRE : k
     
 ### Tabla `sm_datasensores`
 - `rpm`: Revoluciones por minuto (rev/min, float, >0)                          ----> en BD Tabla sm_datasensores CAMPO rpm
@@ -67,7 +58,6 @@ Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
 - `vel_critica`: Porcentaje de velocidad crítica del molino (%,float)
 
 -> se genera nueva tabla **sm_ia_resultado_modelo** con la siguiente estructura 
-  - id_ia_resultado integer NOT NULL PK
   - fecha timestamp without time zone,
   - rpm double precision,
   - potenciaconsumida double precision,
@@ -75,10 +65,7 @@ Los valores para cada parámetro (hasta que nos entreguen valores actualizados)
   - jb double precision,
   - pie double precision,
   - hombro double precision,
-  - velocidad_critica double precision,
-  - id_molino integer (FK a tabla sm_molinos),
-  - error integer,
-  - error_descripcion character varying(200)
+  - velocidad_critica double precision
 
 ## Método Numérico
 
@@ -88,11 +75,16 @@ El modelo utiliza el método de bisección para resolver la ecuación, partiendo
 
 {
   "timestamp": "2024-04-09 12:00:00",
-  "rpm": 15.2,
-  "potenciaconsumida": 1500,
+  "rpm": 12.2,
+  "potenciaconsumida": 6000,
   "J": 35.2,
   "Jb": 30.2,
   "pie": 28.65,
   "hombro": 34.38,
   "vel_critica": 65.2
 }
+
+Para ejecutar el código SIN data operacional, se puede usar valores de entre los siguientes rangos, de acuerdo a la data operacional histórica
+
+- Potencia (kW) : 5500 - 7000
+- % sólidos: 40 - 60%
